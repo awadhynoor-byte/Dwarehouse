@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+
+  # 🟢 MYSQL DEV
+  mysql-dev:
+    image: mysql:8
+    container_name: mysql_dev
+    hostname: mysql_dev
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_dev
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init_dev.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 🟡 MYSQL TEST
+  mysql-test:
+    image: mysql:8
+    container_name: mysql_test
+    hostname: mysql_test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_test
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./init_test.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 🔴 MYSQL PROD
+  mysql-prod:
+    image: mysql:8
+    container_name: mysql_prod
+    hostname: mysql_prod
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_prod
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./init_prod.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 🔵 ETL SERVICE
+  etl:
+    image: python:3.10
+    container_name: etl_service
+    volumes:
+      - ./etl:/app
+      - ./data:/data
+    working_dir: /app
+    command: sh -c "sleep 20 && pip install pandas mysql-connector-python && python etl.py"
+    depends_on:
+      - mysql-dev
