@@ -2,7 +2,7 @@ import pandas as pd
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="mysql-dev",
+    host="mysql_dev",
     user="root",
     password="root",
     database="dw_dev",
