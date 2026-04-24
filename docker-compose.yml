@@ -1,0 +1,83 @@
+services:
+
+  mysql_dev:
+    image: mysql:8
+    container_name: mysql_dev
+    hostname: mysql_dev
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_dev
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mysql_dev_data:/var/lib/mysql   # ✅ AJOUT (persistance)
+    networks:
+      - app_network   # ✅ AJOUT (réseau)
+
+  mysql_test:
+    image: mysql:8
+    container_name: mysql_test
+    hostname: mysql_test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_test
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mysql_test_data:/var/lib/mysql  # ✅ AJOUT
+    networks:
+      - app_network
+
+  mysql_prod:
+    image: mysql:8
+    container_name: mysql_prod
+    hostname: mysql_prod
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_prod
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mysql_prod_data:/var/lib/mysql  # ✅ AJOUT
+    networks:
+      - app_network
+
+  mysql_dac:   # ✅ NOUVEAU SERVICE (DAC)
+    image: mysql:8
+    container_name: mysql_dac
+    hostname: mysql_dac
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dw_dac
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_dac_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  etl:
+    build: ./etl
+    container_name: etl_service
+    volumes:
+      - ./etl:/app
+      - ./data:/data
+    working_dir: /app
+    command: sh -c "sleep 30 && python etl.py"
+    depends_on:
+      - mysql_dev
+    networks:
+      - app_network
+
+# ✅ AJOUT GLOBAL
+volumes:
+  mysql_dev_data:
+  mysql_test_data:
+  mysql_prod_data:
+  mysql_dac_data:
+
+networks:
+  app_network:

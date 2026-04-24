@@ -1,0 +1,19 @@
+services:
+
+  mysql_dac:
+    image: mysql:8
+    container_name: mysql_dac
+    env_file:
+      - .env.dac
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_dac_data:/var/lib/mysql
+    networks:
+      - dac_network
+
+volumes:
+  mysql_dac_data:
+
+networks:
+  dac_network:

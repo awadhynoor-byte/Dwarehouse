@@ -1,0 +1,33 @@
+services:
+
+  mysql_dev:
+    image: mysql:8
+    container_name: mysql_dev
+    env_file:
+      - .env.dev
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mysql_dev_data:/var/lib/mysql
+    networks:
+      - dev_network
+
+  etl:
+    build: ./etl
+    container_name: etl_dev
+    volumes:
+      - ./etl:/app
+      - ./data:/data
+    working_dir: /app
+    command: sh -c "sleep 30 && python etl.py"
+    depends_on:
+      - mysql_dev
+    networks:
+      - dev_network
+
+volumes:
+  mysql_dev_data:
+
+networks:
+  dev_network:
