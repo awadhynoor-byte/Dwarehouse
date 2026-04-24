@@ -57,4 +57,4 @@ for row in df.to_dict("records"):
     )
 
 conn.commit()
-print(" Data Loaded Successfully")
+print(" Data Loaded Successfully !!!")
