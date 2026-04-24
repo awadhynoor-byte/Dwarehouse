@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+version: '3.8'
+
+>>>>>>> cc96df6e4bb063240d362b66ffb23444ee99e6de
 services:
 
   mysql_dev:
@@ -11,9 +16,12 @@ services:
       - "3307:3306"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+<<<<<<< HEAD
       - mysql_dev_data:/var/lib/mysql   # ✅ AJOUT (persistance)
     networks:
       - app_network   # ✅ AJOUT (réseau)
+=======
+>>>>>>> cc96df6e4bb063240d362b66ffb23444ee99e6de
 
   mysql_test:
     image: mysql:8
@@ -26,9 +34,12 @@ services:
       - "3308:3306"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+<<<<<<< HEAD
       - mysql_test_data:/var/lib/mysql  # ✅ AJOUT
     networks:
       - app_network
+=======
+>>>>>>> cc96df6e4bb063240d362b66ffb23444ee99e6de
 
   mysql_prod:
     image: mysql:8
@@ -41,6 +52,7 @@ services:
       - "3309:3306"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+<<<<<<< HEAD
       - mysql_prod_data:/var/lib/mysql  # ✅ AJOUT
     networks:
       - app_network
@@ -58,6 +70,8 @@ services:
       - mysql_dac_data:/var/lib/mysql
     networks:
       - app_network
+=======
+>>>>>>> cc96df6e4bb063240d362b66ffb23444ee99e6de
 
   etl:
     build: ./etl
@@ -68,6 +82,7 @@ services:
     working_dir: /app
     command: sh -c "sleep 30 && python etl.py"
     depends_on:
+<<<<<<< HEAD
       - mysql_dev
     networks:
       - app_network
@@ -81,3 +96,6 @@ volumes:
 
 networks:
   app_network:
+=======
+      - mysql_dev
+>>>>>>> cc96df6e4bb063240d362b66ffb23444ee99e6de
